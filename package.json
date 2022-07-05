@@ -1,0 +1,24 @@
+{
+  "name": "task-list-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run compose:down\" \"npm run stopallct\" \"npm run delallct\" \"npm run compose:up\"",
+    "stopallct": "docker stop $(docker ps -a -q)",
+    "delallct": "docker rm $(docker ps -a -q)",
+    "delallimg": "docker rmi $(docker images -q)",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down",
+    "nodekill": "killall node",
+    "mysqlexist": "mysql -V",
+    "mysqlstatus": "sudo systemctl status mysql  ",
+    "mysqlrestart": "sudo systemctl restart mysql",
+    "mysqlstop": "sudo systemctl stop mysql",
+    "mongostatus":"sudo service mongod status",
+    "mongostart":"sudo service mongod start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

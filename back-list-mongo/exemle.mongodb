@@ -1,0 +1,10 @@
+
+use('dbtask');
+db.createCollection("tasks",{ collation: { locale: "pt" }})
+db.tasks.drop();
+
+db.tasks.insertMany([
+{task:"Adicionando a primeira tarefa", status:"Pendente"}
+])
+
+db.tasks.find();

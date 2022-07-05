@@ -1,0 +1,58 @@
+version: '3.0'
+# definindo os serviços
+services:
+# serviços 1: baixando a imagem mongo na versão 4 a versão 5 em diante conflita com processadores 
+# celeron mais antigos
+  mongo:
+  # baixando a imagem mongo:4
+    image: mongo:4
+    # nomeando o container a partir da imagem baixada 
+    container_name: dbmongo4
+    # definindo a porta que ele vai rodar 
+    # na porta padrão do mongo xxxxxx
+    # conectada com a porta 27017 do meu pc yyyyyyy
+    # ilustrando xxxxxx:yyyyyy
+    ports:
+      - 27017:27017
+    # a flag restart equivale dizer que toda vez que acontecer algum problema
+    # retartar esse container de forma automatica
+    restart: always
+# serviço 2: container para rodar a api    
+  api:
+  # baixando a imagem do node na versao 16
+    image: node:16-alpine
+    # nomeando o container a partir da imagem baixada  
+    container_name: apiback
+    # a flag restart equivale dizer que toda vez que acontecer algum problema
+    # retartar esse container de forma automatica
+    restart: always
+    # Essa flag deixa explicito que minha api só irá iniciar quando o serviço mongo
+    # estiver pronto 
+    depends_on:
+      - mongo
+    # nesse ponto irei passar algumas variaveis de ambiente: pois os dois tem que se comunicarem
+    # o container dbmongo4 : apiback, pois, neste momento os dois estão rodando na rede interna do 
+    # mongo como eu não sei qual endereço ip o docker vai da para meu container do dbmongo4 então 
+    # vou receber esse endereço por meio da variável de ambiente DB_HOST que posso invocá-la posteriormente
+    # dentro da minnha aplicação back-end por mior do comando process.env.
+    environment:
+    # Ilustração: Vou receber na variavel DB_HOST = e o valor dela ele vai ser
+    # preenchido automaticamente pelo docker através do docker dbmongo4  
+      - DB_HOST=mongo
+    # Aproveitando em variáveis de ambiente vou definir onde a porta do meu container apiback, ou seja,
+    # a porta da minha aplicação back-end irá rodar
+      - SERVER_PORT='${SERVER_PORT}'
+     
+    # agora iremos mapear um volume, para quando ocorrer alguma alteração no ambinete local em tempo
+    # de desenvolvimento essas alterações seja refletida automaticamente dentro do meu container.   
+    volumes:
+    # ligando por mieo do ./:  a minha pasta local
+    # a pasta dentro do container apiback /usr/app
+      - ./:/usr/app
+    # definindo o diretório de trabalho do container docker   
+    working_dir: /usr/app
+    # por fim vou rodar o comando para executar esse servidor
+    # npm install - vai instalar todas as dependencia pakage.json 
+    # no container docker apiback;  
+    # npm start - roda à aplicação
+    command: bash -c "npm install && npm start"

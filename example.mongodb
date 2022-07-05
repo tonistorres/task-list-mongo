@@ -1,0 +1,14 @@
+ use('dbtask');
+
+// // The drop() command destroys all data from a collection.
+// // Make sure you run it against the correct database and collection.
+ db.dbtasks.drop();
+
+db.createCollection("tasks",{ collation: { locale: "pt" }})
+
+// // Insert a few documents into the sales collection.
+db.tasks.insertMany([
+  {  'task': 'Adicionando primeira automatico', 'status':'pendente') },
+]);
+
+db.task.find();
